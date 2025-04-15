@@ -1,0 +1,15 @@
+<div class="dropdown m-1">
+    <span class="label-above">Golfer</span>
+    <div class="btn-group">
+        <button type="button" class="btn btn-lg btn-success text-button">{{ golfer or golfers[0] }}</button>
+        <button type="button" class="btn btn-lg btn-success dropdown-toggle dropdown-toggle-split arrow-button"
+            data-bs-toggle="dropdown" aria-expanded="false" id="golfer-dropdown" data-key="{{ golfer or golfers[0] }}">
+            <span class="visually-hidden">{{ golfer or golfers[0] }}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {% for g in golfers %}
+            <li><a class="dropdown-item" onclick="setGolferDropdown('{{ g }}', '{{ g }}')">{{ g }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

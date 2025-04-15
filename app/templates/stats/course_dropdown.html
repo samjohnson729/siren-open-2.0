@@ -1,0 +1,15 @@
+<div class="dropdown m-1">
+    <span class="label-above">Course</span>
+    <div class="btn-group">
+        <button type="button" class="btn btn-lg btn-success text-button">{{ course or courses[0] }}</button>
+        <button type="button" class="btn btn-lg btn-success dropdown-toggle dropdown-toggle-split arrow-button"
+            data-bs-toggle="dropdown" aria-expanded="false" id="course-dropdown" data-key="{{ course or courses[0] }}">
+            <span class="visually-hidden">{{ course or courses[0] }}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {% for c in courses %}
+            <li><a class="dropdown-item" onclick="setCourseDropdown('{{ c }}', '{{ c }}')">{{ c }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

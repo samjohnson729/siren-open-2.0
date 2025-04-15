@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stats/course.css') }}">
+
+<!-- Course selection tabs -->
+<ul class="nav nav-tabs py-1" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link course-tab active" id="course-0-tab" data-bs-toggle="tab" data-bs-target="#course-0"
+            type="button" role="tab" aria-controls="course-0" aria-selected="true">{{ courses[0] }}</button>
+    </li>
+    {% for i in range(1, courses|count) %}
+    <li class="nav-item" role="presentation">
+        <button class="nav-link course-tab" id="course-{{ i }}-tab" data-bs-toggle="tab"
+            data-bs-target="#course-{{ i }}" type="button" role="tab" aria-controls="course-{{ i }}"
+            aria-selected="false">{{ courses[i] }}</button>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- contents -->
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="course-0" role="tabpanel" aria-labelledby="course-0-tab">
+
+        <!-- Summary Table -->
+        <h3 class="py-3">Summary</h3>
+        <table class="table table-sm" style="text-align: center; font-size: small;">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Statistic</th>
+                    <th>Value</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary_by_course[courses[0]] %}
+                <tr>
+                    <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
+                    <td>{{ row.get('value', '') }}</td>
+                    <td>
+                        {% for comment in row.get('comments', []) %}
+                        <span>{{ comment }}</span>
+                        <br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Detail Table -->
+        <h3 class="py-3">Detail</h3>
+        <table class="table table-sm" id="0-table" style="text-align: center; font-size: small;">
+            <thead>
+                <tr>
+                    <th data-sort="numeric">Hole</th>
+                    <th data-sort="numeric">Distance</th>
+                    <th data-sort="numeric">Par</th>
+                    <th data-sort="numeric">Low</th>
+                    <th data-sort="numeric">Average</th>
+                    <th data-sort="numeric">High</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hole, row in detail_by_course[courses[0]].items() %}
+                <tr>
+                    <td>{{ hole }}</td>
+                    <td>{{ row.get('distance', '') }}</td>
+                    <td>{{ row.get('par', '') }}</td>
+                    <td>{{ row.get('low', '') }}</td>
+                    <td>{{ row.get('average', '') }}</td>
+                    <td>{{ row.get('high', '') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% for i in range(1, courses|count) %}
+    {% set c = courses[i] %}
+    <div class="tab-pane fade" id="course-{{ i }}" role="tabpanel" aria-labelledby="course-{{ i }}-tab">
+
+        <!-- Summary Table -->
+        <h3 class="py-3">Summary</h3>
+        <table class="table table-sm" style="text-align: center; font-size: small;">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Statistic</th>
+                    <th>Value</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary_by_course[c] %}
+                <tr>
+                    <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
+                    <td>{{ row.get('value', '') }}</td>
+                    <td>
+                        {% for comment in row.get('comments', []) %}
+                        <span>{{ comment }}</span>
+                        <br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Detail Table -->
+        <h3 class="py-3">Detail</h3>
+        <table class="table table-sm" id="{{ i }}-table" style="text-align: center; font-size: small;">
+            <thead>
+                <tr>
+                    <th data-sort="numeric">Hole</th>
+                    <th data-sort="numeric">Distance</th>
+                    <th data-sort="numeric">Par</th>
+                    <th data-sort="numeric">Low</th>
+                    <th data-sort="numeric">Average</th>
+                    <th data-sort="numeric">High</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hole, row in detail_by_course[c].items() %}
+                <tr>
+                    <td>{{ hole }}</td>
+                    <td>{{ row.get('distance') or '' }}</td>
+                    <td>{{ row.get('par', '') }}</td>
+                    <td>{{ row.get('low', '') }}</td>
+                    <td>{{ row.get('average', '') }}</td>
+                    <td>{{ row.get('high', '') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="{{ url_for('static', filename='js/stats/course.js') }}"></script>
+
+{% endblock %}

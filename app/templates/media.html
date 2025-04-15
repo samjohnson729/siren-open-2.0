@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/media.css') }}">
+
+<div class="form-check form-switch my-2">
+    <input class="form-check-input" type="checkbox" id="video-switch">
+    <label class="form-check-label" for="video-switch">Show videos?</label>
+</div>
+
+<div id="gallery"></div>
+
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <!--<span class="close">&times;</span>-->
+    <div class="modal-content" id="modal-content"></div>
+    <div id="caption"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/media.js') }}"></script>
+<script>
+    const video_switch = document.getElementById('video-switch');
+    video_switch.addEventListener('change', function (event) {
+        buildGallery({{ media_by_year| tojson }}, event.target.checked);
+    });
+    window.addEventListener('resize', buildGallery({{ media_by_year| tojson }}, video_switch.checked));
+    buildGallery({{ media_by_year| tojson }}, video_switch.checked);
+</script>
+
+{% endblock %}

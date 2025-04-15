@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/live.css') }}">
+
+<div id="live-detail-content" class="scrollable-content">
+  {% include "live/live_course_selection.html" %}
+
+  <div class="m-2 d-flex justify-content-between">
+    <span class="fs-3">Hole {{hole.number}}</span>
+    {% if hole.distance %}
+    {% if course == 'Fox Run' %}
+    <span class="fs-3">{{hole.distance}} yds</span>
+    {% else %}
+    <span class="fs-3">{{hole.distance}} ft</span>
+    {% endif %}
+    {% endif %}
+    <span class="fs-3">Par {{hole.par}}</span>
+  </div>
+
+  <div id="detail-scroll-bar" style="padding-bottom: 17%;">
+    {% for hs in hole_scores %}
+    <hr style="margin-top: 10px; margin-bottom: 10px">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>{{ hs.round.golfer.name }}</span>
+
+        <!-- Score down form -->
+        <div class="d-flex align-items-center">
+          <form action="/update_score" method="post">
+            <input type="hidden" name="round_id" value="{{ hs.round_id }}">
+            <input type="hidden" name="hole_id" value="{{ hs.hole_id }}">
+            {% if hs.score %}
+            <input type="hidden" name="score" value="{{ hs.score-1 }}">
+            {% else %}
+            <input type="hidden" name="score" value="{{ hs.hole.par-1 }}">
+            {% endif %}
+            <button type="submit" class="btn btn-success square-button">-</button>
+          </form>
+
+          <!-- Current Score -->
+          {% if hs.score %}
+          <span class="px-3 text-center" style="width: 50px; font-weight:bold;">{{ hs.score }}</span>
+          {% else %}
+          <span class="px-3 text-center" style="width: 50px;"></span>
+          {% endif %}
+
+          <!-- Score up form -->
+          <form action="/update_score" method="post">
+            <input type="hidden" name="round_id" value="{{ hs.round_id }}">
+            <input type="hidden" name="hole_id" value="{{ hs.hole_id }}">
+            {% if hs.score %}
+            <input type="hidden" name="score" value="{{ hs.score+1 }}">
+            {% else %}
+            <input type="hidden" name="score" value="{{ hs.hole.par+1 }}">
+            {% endif %}
+            <button type="submit" class="btn btn-success square-button">+</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% include "live/live_hole_selection.html" %}
+
+<script src="{{ url_for('static', filename='js/live.js') }}"></script>
+
+{% endblock %}

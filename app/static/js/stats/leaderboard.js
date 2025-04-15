@@ -1,0 +1,74 @@
+$(document).ready(function() {
+    // Function to sort a table by a specific column
+    function sortTable(column, order) {
+        let $table = $('#myTable');
+        let $rows = $table.find('tbody tr').detach(); // Detach rows to manipulate them easily
+
+        $rows.sort(function(a, b) {
+            let aValue = $(a).find('td').eq(column).text();
+            let bValue = $(b).find('td').eq(column).text();
+
+            // Attempt to convert values to numbers for numeric comparison
+            let aNum = parseFloat(aValue);
+            let bNum = parseFloat(bValue);
+
+            if (!isNaN(aNum) && !isNaN(bNum)) { // If both are valid numbers
+                if (order === 'asc') {
+                    return aNum - bNum; // Numeric comparison
+                } else {
+                    return bNum - aNum; // Numeric comparison
+                }
+            } else {
+                // If not numbers, perform string comparison
+                if (order === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            }
+        });
+
+        $('#myTable tbody').append($rows); // Append sorted rows back to the table
+    }
+
+    // Add click handlers to the table headers
+    $('th').click(function() {
+        let column = $(this).index(); // Get the index of the clicked header
+        let currentOrder = $(this).data('order'); // Get the current sort order
+        // Toggle the sort order (asc/desc)
+        let newOrder = (currentOrder === 'asc') ? 'desc' : 'asc';
+        // Remove 'sorted' and 'asc/desc' classes from all headers
+        $('th').removeClass('sorted asc desc');
+        // Add 'sorted' and the new order class to the clicked header
+        $(this).addClass('sorted ' + newOrder);
+        $(this).data('order', newOrder); // Set the data attribute with the new order
+        // Sort the table
+        sortTable(column, newOrder);
+    });
+
+    // Initialize the first column as sorted on page load
+    $('th:first-child').addClass('sorted asc');
+    $('th:first-child').data('order', 'asc');
+});
+
+function updateLeaderboard() {
+    const year = document.getElementById('year-dropdown').dataset.key;
+    const statistic = document.getElementById('statistic-dropdown').dataset.key;
+
+    let url = '/stats/leaderboard?';
+    if (year && year != 'all') url = url + 'year=' + year;
+    url = url + '&statistic=' + statistic;
+    window.location.href = url;
+}
+function setYearDropdown(value) {
+    var year_element = document.getElementById('year-dropdown');
+    year_element.textContent = value;
+    year_element.dataset.key = value;
+    updateLeaderboard();
+}
+function setStatisticDropdown(key, value) {
+    var statistic_element = document.getElementById('statistic-dropdown');
+    statistic_element.textContent = value;
+    statistic_element.dataset.key = key;
+    updateLeaderboard();
+}

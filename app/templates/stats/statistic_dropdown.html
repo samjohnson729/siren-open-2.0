@@ -1,0 +1,21 @@
+<div class="dropdown m-1">
+    <span class="label-above">Statistic</span>
+    <div class="btn-group">
+        <button type="button" class="btn btn-lg btn-success text-button">{{
+            statistics_dict[statistic]['label'] if statistic else (statistics_dict.values()|list)[0]['label']
+            }}</button>
+        <button type="button" class="btn btn-lg btn-success dropdown-toggle dropdown-toggle-split arrow-button"
+            data-bs-toggle="dropdown" aria-expanded="false" id="statistic-dropdown"
+            data-key="{{ statistic or (statistics_dict.keys()|list)[0]}}">
+            <span class="visually-hidden">{{
+                statistics_dict[statistic]['label'] if statistic else (statistics_dict.values()|list)[0]['label']
+                }}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {% for k,v in statistics_dict.items() %}
+            {% set label = v['label'] %}
+            <li><a class="dropdown-item" onclick="setStatisticDropdown('{{ k }}', '{{ label }}')">{{ label }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

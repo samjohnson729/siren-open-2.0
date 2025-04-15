@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/live.css') }}">
+
+<div id="live-summary-content" class="scrollable-content">
+    {% include "live/live_course_selection.html" %}
+    <div>
+        <table class="table table-sm table-equal-cells" style="text-align: center;">
+
+            <!-- Initials at the top -->
+            <thead>
+                <tr>
+                    <th>#</th>
+                    {% for g in score_summary.keys() %}
+                    <th>{{ g.split(' ')[0][0]+g.split(' ')[1][0] }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <!-- Total scores +/- -->
+            <thead>
+                <tr>
+                    <th>+/-</th>
+                    {% for g,x in score_summary.items() %}
+                    {% if score_summary[g]['total'] - score_summary[g]['par'] < 0 %} <th style="font-weight: normal;">{{
+                        score_summary[g]['total'] - score_summary[g]['par'] }}</th>
+                        {% elif score_summary[g]['total'] - score_summary[g]['par'] > 0 %}
+                        <th style="font-weight: normal;">+{{ score_summary[g]['total'] - score_summary[g]['par'] }}</th>
+                        {% else %}
+                        <th style="font-weight: normal;">E</th>
+                        {% endif %}
+                        {% endfor %}
+                </tr>
+            </thead>
+
+            <!-- body of table -->
+            <tbody>
+                {% for hole_number,scores_by_golfer in scores.items() %}
+                <tr>
+                    <td style="font-weight: bold;">{{ hole_number }}</td>
+                    {% for g in score_summary.keys() %}
+                    {% if scores_by_golfer[g]['score'] %}
+                    <td>{{ scores_by_golfer[g]['score'] }}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include "live/live_hole_selection.html" %}
+
+<script src="{{ url_for('static', filename='js/live.js') }}"></script>
+
+{% endblock %}

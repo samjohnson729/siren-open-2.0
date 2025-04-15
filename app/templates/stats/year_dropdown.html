@@ -1,0 +1,16 @@
+<div class="dropdown m-1">
+    <span class="label-above">Year</span>
+    <div class="btn-group">
+        <button type="button" class="btn btn-lg btn-success text-button">{{ year or "All" }}</button>
+        <button type="button" class="btn btn-lg btn-success dropdown-toggle dropdown-toggle-split arrow-button"
+            data-bs-toggle="dropdown" aria-expanded="false" id="year-dropdown" data-key="{{ year or ''}}">
+            <span class="visually-hidden">{{ year or "All" }}</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><a class="dropdown-item" onclick="setYearDropdown('all')">All</a></li>
+            {% for y in years %}
+            <li><a class="dropdown-item" onclick="setYearDropdown('{{ y }}')">{{ y }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
