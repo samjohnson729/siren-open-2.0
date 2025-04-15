@@ -15,7 +15,43 @@ class Golfer(db.Model):
 
     def __repr__(self):
         return f"<Golfer id={self.id}, name='{self.name}'>"
+    
+    def get_first_tournament(self):
+        return sorted([r.tournament.year for r in self.rounds if r.is_completed()])[0]
+    
+    def get_number_of_tournaments(self):
+        return len(set([r.tournament.year for r in self.rounds if r.is_completed()]))
+    
+    def get_tournament_wins(self):
+        winners = [t.get_winner() for t in db.session.query(Tournament).all()]
+        return winners.count(self.name)
+    
+    def get_event_wins(self):
+        scores = {}
+        for r in db.session.query(Round).all():
+            if not r.is_completed():
+                continue
+            
+            year = r.tournament.year
+            course = r.layout.course.name
+            golfer = r.golfer.name
+            
+            key = f'{year}-{course}'
+            if key not in scores:
+                scores[key] = {}
+                
+            scores[key][golfer] = r._get_score()
+            
+        event_winners = [[g for g in v if v[g] == min(v.values())][0] for v in scores.values()]
+        return event_winners.count(self.name)
 
+    def get_total_holes(self):
+        hole_scores = db.session.query(HoleScore).join(Round).join(Golfer).filter(Golfer.name == self.name)
+        return len([hs for hs in hole_scores if hs.is_completed()])
+    
+    def get_total_strokes(self):
+        hole_scores = db.session.query(HoleScore).join(Round).join(Golfer).filter(Golfer.name == self.name)
+        return sum([hs._get_score() for hs in hole_scores if hs.is_completed()])
 
 class Course(db.Model):
     __tablename__ = 'course'
@@ -132,6 +168,18 @@ class Tournament(db.Model):
 
     def __repr__(self):
         return f"<Tournament id={self.id}, year='{self.year}'>"
+    
+    def is_completed(self):
+        return all([r.is_completed() for r in self.rounds])
+    
+    def get_winner(self):
+        if not self.is_completed():
+            return
+        
+        scores = {}
+        for r in self.rounds:
+            scores[r.golfer.name] = scores.get(r.golfer.name, 0) + r._get_score()
+        return [k for k,v in scores.items() if v == min(scores.values())][0]
 
 
 class HoleScore(db.Model):

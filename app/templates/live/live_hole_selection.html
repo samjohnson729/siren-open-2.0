@@ -5,15 +5,3 @@
         href="{{ url_for('live_detail', course=course, hole=i+1) }}">{{ i+1 }}</a>
     {% endfor %}
 </div>
-
-<!-- script to keep scrolling hole numbers in same position after reload -->
-<!--<script>
-    el = document.getElementById("live-hole-selection");
-    window.onbeforeunload = function (e) {
-        localStorage.setItem('hole-scroll-bar-pos', el.scrollLeft);
-    };
-    window.onload = function (e) {
-        var scrollpos = localStorage.getItem('hole-scroll-bar-pos');
-        if (scrollpos) el.scrollLeft = scrollpos;
-    };
-</script>-->

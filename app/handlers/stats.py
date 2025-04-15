@@ -168,6 +168,17 @@ def render_player(params: dict = {}):
     years = []
     golfers = [g.name for g in db.session.query(Golfer).all()]
     golfer = params.get('golfer', 'Ian Snyder')
+    g = db.session.query(Golfer).filter(Golfer.name == golfer).first()
+    
+    # build profile
+    profile = {
+        'First Tournament': g.get_first_tournament(),
+        'Number of Tournaments': g.get_number_of_tournaments(),
+        'Tournament Wins': g.get_tournament_wins(),
+        'Event Wins': g.get_event_wins(),
+        'Total Holes': g.get_total_holes(),
+        'Total Strokes': g.get_total_strokes(),        
+    }
 
     # build summary results
     rounds = db.session.query(Round).join(Golfer).filter(Golfer.name == golfer).all()
@@ -257,6 +268,7 @@ def render_player(params: dict = {}):
         golfers=golfers,
         courses=courses,
         years=years,
+        profile=profile,
         summary=summary,
         detailed=detailed,
         statistics_dict=STATISTICS,
