@@ -17,7 +17,7 @@ class Golfer(db.Model):
         return f"<Golfer id={self.id}, name='{self.name}'>"
     
     def get_first_tournament(self):
-        return sorted([r.tournament.year for r in self.rounds if r.is_completed()])[0]
+        return sorted([r.tournament.year for r in self.rounds])[0]
     
     def get_number_of_tournaments(self):
         return len(set([r.tournament.year for r in self.rounds if r.is_completed()]))

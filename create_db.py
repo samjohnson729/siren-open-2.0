@@ -130,6 +130,12 @@ for year in detailed.Year.unique():
 t = Tournament(year=2025)
 db.session.add(t)
 
+g = Golfer(name='Dan Sievert')
+db.session.add(g)
+g = Golfer(name='Austin Magnuson')
+db.session.add(g)
+db.session.commit()
+
 for g in db.session.query(Golfer).all():
     for c in db.session.query(Course).all():
         l: Layout = c.layouts[-1]
