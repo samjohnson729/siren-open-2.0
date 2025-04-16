@@ -120,6 +120,8 @@ class Round(db.Model):
     tournament_id = mapped_column(Integer, ForeignKey('tournament.id'), nullable=False)
     golfer_id = mapped_column(Integer, ForeignKey('golfer.id'), nullable=False)
     layout_id = mapped_column(Integer, ForeignKey('layout.id'), nullable=False)
+    
+    _total_score = mapped_column(Integer, nullable=True)
 
     scores = relationship("HoleScore", backref="round")
 
@@ -127,7 +129,10 @@ class Round(db.Model):
         return f"<Round id={self.id}, tournament={self.tournament_id}, golfer={self.golfer_id}, layout={self.layout_id}>"
     
     def is_completed(self):
-        return all([s.score for s in self.scores])
+        if len(self.scores) == 0:
+            return self._total_score is not None
+        else:
+            return all([s.score for s in self.scores])
     
     def get_statistic(self, statistic:str):
         if not self.is_completed():
@@ -144,10 +149,16 @@ class Round(db.Model):
                 return self._get_z_score()
 
     def _get_score(self):
-        return sum([s.score for s in self.scores])
+        if len(self.scores) == 0:
+            return self._total_score
+        else:
+            return sum([s.score for s in self.scores])
     
     def _get_score_to_par(self):
-        return sum([s.score - s.hole.par for s in self.scores])
+        if len(self.scores) == 0:
+            return self._total_score - sum([h.par for h in self.layout.holes])
+        else:
+            return sum([s.score - s.hole.par for s in self.scores])
         
     def _get_strokes_gained(self):
         return sum([h._get_mean() for h in self.layout.holes]) - self._get_score()

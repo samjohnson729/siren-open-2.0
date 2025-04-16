@@ -148,3 +148,19 @@ for g in db.session.query(Golfer).all():
             db.session.commit()
 
 db.session.commit()
+
+# load historical statistics for 2022 Moose Mulligan
+t = db.session.query(Tournament).filter(Tournament.year == 2022).first()
+l = db.session.query(Layout).join(Course).filter(Course.name == 'Moose Mulligan').first()
+
+summary = pd.read_csv('./summary.csv').sort_values(['Year', 'Event', 'Name'])
+for i, row in summary.iterrows():
+    g = db.session.query(Golfer).filter(Golfer.name == row['Name']).first()
+    r = Round(
+        tournament_id=t.id,
+        layout_id=l.id,
+        golfer_id=g.id,
+        _total_score=row['Score']
+    )
+    db.session.add(r)
+db.session.commit()
