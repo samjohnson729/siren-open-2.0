@@ -16,34 +16,36 @@
 <h3 style="padding-top: 10px;">Profile</h3>
 {% for k,v in profile.items() %}
 <span style="font-weight: bold; font-size: large;">{{k}}</span>
-<span  style="font-size: large;">: {{v}}</span>
+<span style="font-size: large;">: {{v}}</span>
 <br>
 {% endfor %}
 
 <!-- Summary Table -->
 <h3 style="padding-top: 10px;">Summary</h3>
-<table class="table table-sm table-equal-cells" style="text-align: center; font-size: medium;" id="myTable">
-    <thead>
-        <tr>
-            <th data-sort="string">Year</th>
-            {% for c in courses %}
-            <th data-sort="numeric">{{ c }}</th>
+<div class="scrollable-table-container">
+    <table class="table table-sm table-equal-cells scrollable-table" id="myTable">
+        <thead>
+            <tr>
+                <th data-sort="string">Year</th>
+                {% for c in courses %}
+                <th data-sort="numeric">{{ c }}</th>
+                {% endfor %}
+                <th data-sort="numeric">&#931</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for y in years %}
+            <tr>
+                <td style="font-weight: bold;">{{ y }}</td>
+                {% for c in courses %}
+                <td>{{ summary[y].get(c, {}).get(statistic or 'score', '') }}</td>
+                {% endfor %}
+                <td>{{ summary[y]['total'][statistic or 'score'] }}</td>
+            </tr>
             {% endfor %}
-            <th data-sort="numeric">&#931</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for y in years %}
-        <tr>
-            <td style="font-weight: bold;">{{ y }}</td>
-            {% for c in courses %}
-            <td>{{ summary[y].get(c, {}).get(statistic or 'score', '') }}</td>
-            {% endfor %}
-            <td>{{ summary[y]['total'][statistic or 'score'] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
 <!-- past detail scorecards -->
 <h3 style="padding-top: 10px;">Detail</h3>
@@ -65,8 +67,8 @@
 
 <!-- detail contents -->
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="course-0" role="tabpanel" aria-labelledby="course-0-tab">
-        <table class="table table-sm table-equal-cells" style="text-align: center; font-size: medium;">
+    <div class="tab-pane fade show active scrollable-table-container" id="course-0" role="tabpanel" aria-labelledby="course-0-tab">
+        <table class="table table-sm table-equal-cells scrollable-table">
 
             {% set c = courses[0] %}
             <!-- Initials at the top -->
@@ -109,8 +111,8 @@
     </div>
     {% for i in range(1, courses|count) %}
     {% set c = courses[i] %}
-    <div class="tab-pane fade" id="course-{{ i }}" role="tabpanel" aria-labelledby="course-{{ i }}-tab">
-        <table class="table table-sm table-equal-cells" style="text-align: center; font-size: medium;">
+    <div class="tab-pane fade scrollable-table-container" id="course-{{ i }}" role="tabpanel" aria-labelledby="course-{{ i }}-tab">
+        <table class="table table-sm table-equal-cells scrollable-table">
 
             <!-- Initials at the top -->
             <thead>

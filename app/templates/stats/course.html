@@ -24,56 +24,60 @@
 
         <!-- Summary Table -->
         <h3 class="py-3">Summary</h3>
-        <table class="table table-sm" style="text-align: center; font-size: medium;">
-            <thead>
-                <tr>
-                    <th style="text-align: left;">Statistic</th>
-                    <th>Value</th>
-                    <th>Comment</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in summary_by_course[courses[0]] %}
-                <tr>
-                    <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
-                    <td>{{ row.get('value', '') }}</td>
-                    <td>
-                        {% for comment in row.get('comments', []) %}
-                        <span>{{ comment }}</span>
-                        <br>
-                        {% endfor %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="scrollable-table-container">
+            <table class="table table-sm scrollable-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Statistic</th>
+                        <th>Value</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in summary_by_course[courses[0]] %}
+                    <tr>
+                        <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
+                        <td>{{ row.get('value', '') }}</td>
+                        <td>
+                            {% for comment in row.get('comments', []) %}
+                            <span>{{ comment }}</span>
+                            <br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <!-- Detail Table -->
         <h3 class="py-3">Detail</h3>
-        <table class="table table-sm" id="0-table" style="text-align: center; font-size: medium;">
-            <thead>
-                <tr>
-                    <th data-sort="numeric">Hole</th>
-                    <th data-sort="numeric">Distance</th>
-                    <th data-sort="numeric">Par</th>
-                    <th data-sort="numeric">Low</th>
-                    <th data-sort="numeric">Average</th>
-                    <th data-sort="numeric">High</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for hole, row in detail_by_course[courses[0]].items() %}
-                <tr>
-                    <td>{{ hole }}</td>
-                    <td>{{ row.get('distance', '') }}</td>
-                    <td>{{ row.get('par', '') }}</td>
-                    <td>{{ row.get('low', '') }}</td>
-                    <td>{{ row.get('average', '') }}</td>
-                    <td>{{ row.get('high', '') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="scrollable-table-container">
+            <table class="table table-sm scrollable-table" id="0-table">
+                <thead>
+                    <tr>
+                        <th data-sort="numeric">Hole</th>
+                        <th data-sort="numeric">Distance</th>
+                        <th data-sort="numeric">Par</th>
+                        <th data-sort="numeric">Low</th>
+                        <th data-sort="numeric">Average</th>
+                        <th data-sort="numeric">High</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hole, row in detail_by_course[courses[0]].items() %}
+                    <tr>
+                        <td>{{ hole }}</td>
+                        <td>{{ row.get('distance', '') }}</td>
+                        <td>{{ row.get('par', '') }}</td>
+                        <td>{{ row.get('low', '') }}</td>
+                        <td>{{ row.get('average', '') }}</td>
+                        <td>{{ row.get('high', '') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% for i in range(1, courses|count) %}
     {% set c = courses[i] %}
@@ -81,56 +85,60 @@
 
         <!-- Summary Table -->
         <h3 class="py-3">Summary</h3>
-        <table class="table table-sm" style="text-align: center; font-size: medium;">
-            <thead>
-                <tr>
-                    <th style="text-align: left;">Statistic</th>
-                    <th>Value</th>
-                    <th>Comment</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in summary_by_course[c] %}
-                <tr>
-                    <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
-                    <td>{{ row.get('value', '') }}</td>
-                    <td>
-                        {% for comment in row.get('comments', []) %}
-                        <span>{{ comment }}</span>
-                        <br>
-                        {% endfor %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="scrollable-table-container">
+            <table class="table table-sm scrollable-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Statistic</th>
+                        <th>Value</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in summary_by_course[c] %}
+                    <tr>
+                        <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
+                        <td>{{ row.get('value', '') }}</td>
+                        <td>
+                            {% for comment in row.get('comments', []) %}
+                            <span>{{ comment }}</span>
+                            <br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <!-- Detail Table -->
         <h3 class="py-3">Detail</h3>
-        <table class="table table-sm" id="{{ i }}-table" style="text-align: center; font-size: medium;">
-            <thead>
-                <tr>
-                    <th data-sort="numeric">Hole</th>
-                    <th data-sort="numeric">Distance</th>
-                    <th data-sort="numeric">Par</th>
-                    <th data-sort="numeric">Low</th>
-                    <th data-sort="numeric">Average</th>
-                    <th data-sort="numeric">High</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for hole, row in detail_by_course[c].items() %}
-                <tr>
-                    <td>{{ hole }}</td>
-                    <td>{{ row.get('distance') or '' }}</td>
-                    <td>{{ row.get('par', '') }}</td>
-                    <td>{{ row.get('low', '') }}</td>
-                    <td>{{ row.get('average', '') }}</td>
-                    <td>{{ row.get('high', '') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="scrollable-table-container">
+            <table class="table table-sm scrollable-table" id="{{ i }}-table">
+                <thead>
+                    <tr>
+                        <th data-sort="numeric">Hole</th>
+                        <th data-sort="numeric">Distance</th>
+                        <th data-sort="numeric">Par</th>
+                        <th data-sort="numeric">Low</th>
+                        <th data-sort="numeric">Average</th>
+                        <th data-sort="numeric">High</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hole, row in detail_by_course[c].items() %}
+                    <tr>
+                        <td>{{ hole }}</td>
+                        <td>{{ row.get('distance') or '' }}</td>
+                        <td>{{ row.get('par', '') }}</td>
+                        <td>{{ row.get('low', '') }}</td>
+                        <td>{{ row.get('average', '') }}</td>
+                        <td>{{ row.get('high', '') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% endfor %}
 </div>

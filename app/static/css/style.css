@@ -1,0 +1,9 @@
+.scrollable-table-container {
+    overflow: auto;
+}
+
+.scrollable-table {
+    text-align: center;
+    overflow-x: auto;
+    font-size: medium;
+}
