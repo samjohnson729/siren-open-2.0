@@ -37,7 +37,7 @@ def render_leaderboard(params: dict = {}):
     leaderboard = {}
     golfers = []
     courses = []
-    years = reversed(sorted([t.year for t in db.session.query(Tournament).all()]))
+    years = sorted([t.year for t in db.session.query(Tournament).all()])[::-1]
     for r in rounds:
         g = r.golfer.name
         c = r.layout.course.name

@@ -10,21 +10,16 @@ function updateScorecard() {
     window.location.href = url;
 }
 
-function setYearDropdown(value) {
-    var year_element = document.getElementById('year-dropdown');
-    year_element.textContent = value;
-    year_element.dataset.key = value;
-    updateScorecard();
-}
-function setStatisticDropdown(key, value) {
-    var statistic_element = document.getElementById('statistic-dropdown');
-    statistic_element.textContent = value;
-    statistic_element.dataset.key = key;
-    updateScorecard();
-}
-function setCourseDropdown(key, value) {
-    var course_element = document.getElementById('course-dropdown');
-    course_element.textContent = value;
-    course_element.dataset.key = key;
-    updateScorecard();
-}
+const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-key') {
+            updateScorecard();
+        }
+    }
+});
+const course = document.getElementById('course-dropdown');
+const year = document.getElementById('year-dropdown');
+const statistic = document.getElementById('statistic-dropdown');
+observer.observe(course, { attributes: true });
+observer.observe(year, { attributes: true });
+observer.observe(statistic, { attributes: true });

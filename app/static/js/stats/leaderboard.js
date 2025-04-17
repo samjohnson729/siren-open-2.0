@@ -1,10 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Function to sort a table by a specific column
     function sortTable(column, order) {
         let $table = $('#myTable');
         let $rows = $table.find('tbody tr').detach(); // Detach rows to manipulate them easily
 
-        $rows.sort(function(a, b) {
+        $rows.sort(function (a, b) {
             let aValue = $(a).find('td').eq(column).text();
             let bValue = $(b).find('td').eq(column).text();
 
@@ -32,7 +32,7 @@ $(document).ready(function() {
     }
 
     // Add click handlers to the table headers
-    $('th').click(function() {
+    $('th').click(function () {
         let column = $(this).index(); // Get the index of the clicked header
         let currentOrder = $(this).data('order'); // Get the current sort order
         // Toggle the sort order (asc/desc)
@@ -52,23 +52,24 @@ $(document).ready(function() {
 });
 
 function updateLeaderboard() {
-    const year = document.getElementById('year-dropdown').dataset.key;
-    const statistic = document.getElementById('statistic-dropdown').dataset.key;
+
+    var year = document.getElementById('year-dropdown').dataset.key;
+    var statistic = document.getElementById('statistic-dropdown').dataset.key;
 
     let url = '/stats/leaderboard?';
     if (year && year != 'all') url = url + 'year=' + year;
     url = url + '&statistic=' + statistic;
     window.location.href = url;
 }
-function setYearDropdown(value) {
-    var year_element = document.getElementById('year-dropdown');
-    year_element.textContent = value;
-    year_element.dataset.key = value;
-    updateLeaderboard();
-}
-function setStatisticDropdown(key, value) {
-    var statistic_element = document.getElementById('statistic-dropdown');
-    statistic_element.textContent = value;
-    statistic_element.dataset.key = key;
-    updateLeaderboard();
-}
+
+const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-key') {
+            updateLeaderboard();
+        }
+    }
+});
+const year = document.getElementById('year-dropdown');
+const statistic = document.getElementById('statistic-dropdown');
+observer.observe(year, { attributes: true });
+observer.observe(statistic, { attributes: true });

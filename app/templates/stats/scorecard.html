@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/stats/scorecard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css') }}">
 
 <h1 style="padding-top: 10px;">Scorecard</h1>
 
-<div style="display: flex;">
+<div style="display: flex;" id="filters">
     {% include "stats/course_dropdown.html" %}
     {% include "stats/year_dropdown.html" %}
     {% include "stats/statistic_dropdown.html" %}
@@ -48,6 +48,7 @@
     </table>
 </div>
 
+<script src="{{ url_for('static', filename='js/stats/stats.js') }}"></script>
 <script src="{{ url_for('static', filename='js/stats/scorecard.js') }}"></script>
 
 {% endblock %}

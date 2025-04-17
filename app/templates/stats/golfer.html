@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/stats/golfer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css') }}">
 
 <!-- golfer and statistic nav menu -->
 <div style="display: flex;">
@@ -155,6 +155,7 @@
     {% endfor %}
 </div>
 
+<script src="{{ url_for('static', filename='js/stats/stats.js') }}"></script>
 <script src="{{ url_for('static', filename='js/stats/golfer.js') }}"></script>
 
 {% endblock %}
