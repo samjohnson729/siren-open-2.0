@@ -15,8 +15,8 @@ def stats_scorecard():
     return render_scorecard(params=request.args.to_dict())
 
 @app.route('/stats/golfer', methods=['GET', 'POST'])
-def stats_player():
-    return render_player(params=request.args.to_dict())
+def stats_golfer():
+    return render_golfer(params=request.args.to_dict())
 
 @app.route('/stats/course', methods=['GET', 'POST'])
 def stats_course():

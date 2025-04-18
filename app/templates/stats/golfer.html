@@ -3,11 +3,7 @@
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css') }}">
 
-<!-- golfer and statistic nav menu -->
-<div style="display: flex;">
-    {% include "stats/golfer_dropdown.html" %}
-    {% include "stats/statistic_dropdown.html" %}
-</div>
+{{ filter_buttons | safe }}
 
 <hr>
 <img src="/static/media/golfers/{{ golfer }}.jpg" style="width: 100%">
@@ -20,142 +16,33 @@
 <br>
 {% endfor %}
 
+<canvas id="myRadarChart"></canvas>
+
 <!-- Summary Table -->
 <h3 style="padding-top: 10px;">Summary</h3>
-<div class="scrollable-table-container">
-    <table class="table table-sm table-equal-cells scrollable-table" id="myTable">
-        <thead>
-            <tr>
-                <th data-sort="string">Year</th>
-                {% for c in courses %}
-                <th data-sort="numeric">{{ c }}</th>
-                {% endfor %}
-                <th data-sort="numeric">&#931</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for y in years %}
-            <tr>
-                <td style="font-weight: bold;">{{ y }}</td>
-                {% for c in courses %}
-                <td>{{ summary[y].get(c, {}).get(statistic or 'score', '') }}</td>
-                {% endfor %}
-                <td>{{ summary[y]['total'][statistic or 'score'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{{ summary_table | safe }}
 
 <!-- past detail scorecards -->
 <h3 style="padding-top: 10px;">Detail</h3>
 
 <!-- Course selection tabs -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link course-tab active" id="course-0-tab" data-bs-toggle="tab" data-bs-target="#course-0"
-            type="button" role="tab" aria-controls="course-0" aria-selected="true">{{ courses[0] }}</button>
-    </li>
-    {% for i in range(1, courses|count) %}
-    <li class="nav-item" role="presentation">
-        <button class="nav-link course-tab" id="course-{{ i }}-tab" data-bs-toggle="tab"
-            data-bs-target="#course-{{ i }}" type="button" role="tab" aria-controls="course-{{ i }}"
-            aria-selected="false">{{ courses[i] }}</button>
-    </li>
-    {% endfor %}
-</ul>
+{{ course_tabs | safe }}
 
-<!-- detail contents -->
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active scrollable-table-container" id="course-0" role="tabpanel" aria-labelledby="course-0-tab">
-        <table class="table table-sm table-equal-cells scrollable-table">
-
-            {% set c = courses[0] %}
-            <!-- Initials at the top -->
-            <thead>
-                <tr>
-                    <th>#</th>
-                    {% for y in detailed[c] %}
-                    <th>{{ y }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <!-- Total scores +/- -->
-            <thead>
-                <tr>
-                    <th>&#931</th>
-                    {% for y in detailed[c] %}
-                    <th style="font-weight: normal;">{{ detailed[c].get(y, {}).get('total', {}).get(statistic or
-                        'score',
-                        '') }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <!-- body of table -->
-            <tbody>
-                {% for h in detailed[c][years[-1]] %}
-                {% if h != 'total' %}
-                <tr>
-                    <td style="font-weight: bold;">{{ h }}</td>
-                    {% for y in detailed[c] %}
-                    <td>{{ detailed[c][y][h][statistic or 'score'] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-
-        </table>
+        {{ detail_tables[0] | safe }}
     </div>
-    {% for i in range(1, courses|count) %}
-    {% set c = courses[i] %}
+
+    {% for i in range(1, detail_tables|count) %}
     <div class="tab-pane fade scrollable-table-container" id="course-{{ i }}" role="tabpanel" aria-labelledby="course-{{ i }}-tab">
-        <table class="table table-sm table-equal-cells scrollable-table">
-
-            <!-- Initials at the top -->
-            <thead>
-                <tr>
-                    <th>#</th>
-                    {% for y in detailed[c] %}
-                    <th>{{ y }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <!-- Total scores +/- -->
-            <thead>
-                <tr>
-                    <th>&#931</th>
-                    {% for y in detailed[c] %}
-                    <th style="font-weight: normal;">{{ detailed[c].get(y, {}).get('total', {}).get(statistic or
-                        'score',
-                        '') }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-
-            <!-- body of table -->
-            <tbody>
-                {% for h in detailed[c][years[-1]] %}
-                {% if h != 'total' %}
-                <tr>
-                    <td style="font-weight: bold;">{{ h }}</td>
-                    {% for y in detailed[c] %}
-                    <td>{{ detailed[c][y][h][statistic or 'score'] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-
-        </table>
+        {{ detail_tables[i] | safe }}
     </div>
     {% endfor %}
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/stats/stats.js') }}"></script>
 <script src="{{ url_for('static', filename='js/stats/golfer.js') }}"></script>
+<script>renderRadarChart({{ radar_data['labels']|tojson }}, {{ radar_data['values']|tojson }})</script>
 
 {% endblock %}

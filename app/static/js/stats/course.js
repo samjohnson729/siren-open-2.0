@@ -5,26 +5,37 @@ $(document).ready(function() {
         let $table = $('#' + table_id);
         let $rows = $table.find('tbody tr').detach(); // Detach rows to manipulate them easily
 
-        $rows.sort(function(a, b) {
-            let aValue = $(a).find('td').eq(column).text();
-            let bValue = $(b).find('td').eq(column).text();
-
-            // Attempt to convert values to numbers for numeric comparison
-            let aNum = parseFloat(aValue);
-            let bNum = parseFloat(bValue);
-
-            if (!isNaN(aNum) && !isNaN(bNum)) { // If both are valid numbers
-                if (order === 'asc') {
-                    return aNum - bNum; // Numeric comparison
-                } else {
-                    return bNum - aNum; // Numeric comparison
-                }
+        $rows.sort(function (a, b) {
+            let aValue = $(a).find('td').eq(column).text().trim(); // Trim whitespace for accurate checks
+            let bValue = $(b).find('td').eq(column).text().trim();
+        
+            const aIsNull = !aValue; // Consider empty strings as null
+            const bIsNull = !bValue;
+        
+            if (aIsNull && bIsNull) {
+                return 0; // Both are null, no change in order
+            } else if (aIsNull) {
+                return 1; // a is null, b is not, so a goes after b
+            } else if (bIsNull) {
+                return -1; // b is null, a is not, so b goes after a
             } else {
-                // If not numbers, perform string comparison
-                if (order === 'asc') {
-                    return aValue.localeCompare(bValue);
+                // Attempt to convert values to numbers for numeric comparison
+                let aNum = parseFloat(aValue);
+                let bNum = parseFloat(bValue);
+        
+                if (!isNaN(aNum) && !isNaN(bNum)) { // If both are valid numbers
+                    if (order === 'asc') {
+                        return aNum - bNum; // Numeric comparison
+                    } else {
+                        return bNum - aNum; // Numeric comparison
+                    }
                 } else {
-                    return bValue.localeCompare(aValue);
+                    // If not numbers, perform string comparison
+                    if (order === 'asc') {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
                 }
             }
         });

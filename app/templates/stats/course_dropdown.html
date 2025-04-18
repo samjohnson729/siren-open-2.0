@@ -1,7 +1,8 @@
 <div class="dropdown" style="padding-left: 1px; padding-right: 1px;">
     <span class="label-above">Course</span>
-    <button class="btn btn-success dropdown-toggle filter-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-key="{{ course or courses[0] }}" id="course-dropdown">
-        {{ course or courses[0] }}
+    <button class="btn btn-success dropdown-toggle filter-button" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false" data-key="{{ course }}" id="course-dropdown">
+        {{ course }}
     </button>
     <ul class="dropdown-menu">
         {% for c in courses %}

@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String, Float, ForeignKey, Column, Identity
 from sqlalchemy.orm import mapped_column, relationship
 import numpy as np
+from scipy.stats import norm
 
 from app import db
 
@@ -52,6 +53,21 @@ class Golfer(db.Model):
     def get_total_strokes(self):
         hole_scores = db.session.query(HoleScore).join(Round).join(Golfer).filter(Golfer.name == self.name)
         return sum([hs._get_score() for hs in hole_scores if hs.is_completed()])
+
+    def get_radar_data(self):
+        labels = []
+        values = []
+        for c in db.session.query(Course).all():
+            x = np.mean([r._get_score() for r in self.rounds if r.is_completed() and r.layout.course.name == c.name])
+            all_rounds = db.session.query(Round).join(Layout).join(Course).filter(Course.name == c.name).all()
+            mu = np.mean([r._get_score() for r in all_rounds if r.is_completed()])
+            sigma = np.std([r._get_score() for r in all_rounds if r.is_completed()])
+            labels.append(c.name.split(' '))
+            values.append(float(1 - norm.cdf(x, loc=mu, scale=sigma)))
+        return {
+            'labels': labels,
+            'values': values
+        }
 
 class Course(db.Model):
     __tablename__ = 'course'

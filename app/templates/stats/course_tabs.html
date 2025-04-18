@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link course-tab active" id="course-0-tab" data-bs-toggle="tab" data-bs-target="#course-0"
+            type="button" role="tab" aria-controls="course-0" aria-selected="true">{{ courses[0] }}</button>
+    </li>
+    {% for i in range(1, courses|count) %}
+    <li class="nav-item" role="presentation">
+        <button class="nav-link course-tab" id="course-{{ i }}-tab" data-bs-toggle="tab"
+            data-bs-target="#course-{{ i }}" type="button" role="tab" aria-controls="course-{{ i }}"
+            aria-selected="false">{{ courses[i] }}</button>
+    </li>
+    {% endfor %}
+</ul>

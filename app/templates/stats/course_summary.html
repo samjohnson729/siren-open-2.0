@@ -1,0 +1,25 @@
+<div class="scrollable-table-container">
+    <table class="table table-sm scrollable-table">
+        <thead>
+            <tr>
+                <th style="text-align: left;">Statistic</th>
+                <th>Value</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in summary %}
+            <tr>
+                <td style="text-align: left;">{{ row.get('statistic', '') }}</td>
+                <td>{{ row.get('value', '') }}</td>
+                <td>
+                    {% for comment in row.get('comments', []) %}
+                    <span>{{ comment }}</span>
+                    <br>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

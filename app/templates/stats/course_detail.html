@@ -1,0 +1,26 @@
+<div class="scrollable-table-container">
+    <table class="table table-sm scrollable-table" id="{{ table_id }}">
+        <thead>
+            <tr>
+                <th data-sort="numeric">Hole</th>
+                <th data-sort="numeric">Distance</th>
+                <th data-sort="numeric">Par</th>
+                <th data-sort="numeric">Low</th>
+                <th data-sort="numeric">Average</th>
+                <th data-sort="numeric">High</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hole, row in detail.items() %}
+            <tr>
+                <td>{{ hole }}</td>
+                <td>{{ row.get('distance', '') }}</td>
+                <td>{{ row.get('par', '') }}</td>
+                <td>{{ row.get('low', '') }}</td>
+                <td>{{ row.get('average', '') }}</td>
+                <td>{{ row.get('high', '') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

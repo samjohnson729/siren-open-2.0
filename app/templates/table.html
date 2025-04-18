@@ -1,0 +1,32 @@
+<div class="scrollable-table-container">
+    <table class="table table-md table-equal-cells scrollable-table" id="{{ table_id }}">
+        <thead>
+            <tr>
+                <th data-sort="string">{{ top_left }}</th>
+                {% for c in columns %}
+                <th data-sort="numeric">{{ c }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% if total_row %}
+        <thead>
+            <tr>
+                <th>Σ</th>
+                {% for c in columns %}
+                <th style="font-weight: normal;">{{ data['Total'][c] }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% endif %}
+        <tbody>
+            {% for r in rows %}
+            <tr>
+                <td style="font-weight: bold;">{{ r }}</td>
+                {% for c in columns %}
+                <td>{{ data[r][c] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

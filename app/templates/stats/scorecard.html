@@ -5,48 +5,9 @@
 
 <h1 style="padding-top: 10px;">Scorecard</h1>
 
-<div style="display: flex;" id="filters">
-    {% include "stats/course_dropdown.html" %}
-    {% include "stats/year_dropdown.html" %}
-    {% include "stats/statistic_dropdown.html" %}
-</div>
+{{ filter_buttons | safe }}
 
-<div class="scrollable-table-container">
-    <table class="table table-sm table-equal-cells scrollable-table">
-
-        <!-- Initials at the top -->
-        <thead>
-            <tr>
-                <th>#</th>
-                {% for g in golfers %}
-                <th>{{ g.split(' ')[0][0]+g.split(' ')[1][0] }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-
-        <!-- Total scores +/- -->
-        <thead>
-            <tr>
-                <th>&#931</th>
-                {% for g in golfers %}
-                <th style="font-weight: normal;">{{ scorecard[g]['total'][statistic or 'score'] }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-
-        <!-- body of table -->
-        <tbody>
-            {% for h in holes %}
-            <tr>
-                <td style="font-weight: bold;">{{ h }}</td>
-                {% for g in golfers %}
-                <td>{{ scorecard[g][h][statistic or 'score'] }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{{ table | safe }}
 
 <script src="{{ url_for('static', filename='js/stats/stats.js') }}"></script>
 <script src="{{ url_for('static', filename='js/stats/scorecard.js') }}"></script>

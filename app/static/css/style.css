@@ -7,3 +7,7 @@
     overflow-x: auto;
     font-size: medium;
 }
+
+.scrollable-table th {
+    border-bottom: 4px solid #000;
+}

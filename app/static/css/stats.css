@@ -1,12 +1,9 @@
 .label-above {
     display: block;
-    /* Make the label take its own line */
     font-size: 1.0rem;
-    /* Smaller font size */
     color: #666;
-    /* Slightly muted color */
+    margin-top: 0.25rem;
     margin-bottom: 0.25rem;
-    /* Space between label and button */
     margin-left: 0.25rem;
 }
 

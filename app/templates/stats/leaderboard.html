@@ -5,35 +5,9 @@
 
 <h1 style="padding-top: 10px;">Leaderboard</h1>
 
-<div style="display: flex;" id="filters">
-    {% include "stats/year_dropdown.html" %}
-    {% include "stats/statistic_dropdown.html" %}
-</div>
+{{ filter_buttons | safe }}
 
-<div class="scrollable-table-container">
-    <table class="table table-sm table-equal-cells scrollable-table" id="myTable">
-        <thead>
-            <tr>
-                <th data-sort="string">Player</th>
-                {% for c in courses %}
-                <th data-sort="numeric">{{ c }}</th>
-                {% endfor %}
-                <th data-sort="numeric">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for g in golfers %}
-            <tr>
-                <td style="font-weight: bold;">{{ g.split(' ')[0][0]+g.split(' ')[1][0] }}</td>
-                {% for c in courses %}
-                <td>{{ leaderboard[g][c][statistic or 'score'] }}</td>
-                {% endfor %}
-                <td>{{ leaderboard[g]['total'][statistic or 'score'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{{ table | safe }}
 
 <script src="{{ url_for('static', filename='js/stats/stats.js') }}"></script>
 <script src="{{ url_for('static', filename='js/stats/leaderboard.js') }}"></script>
