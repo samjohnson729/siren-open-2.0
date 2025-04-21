@@ -5,7 +5,9 @@
         {{ year or 'All' }}
     </button>
     <ul class="dropdown-menu">
+        {% if include_all_years %}
         <li><a class="dropdown-item" onclick="setYearDropdown('all')">All</a></li>
+        {% endif %}
         {% for y in years %}
         <li><a class="dropdown-item" onclick="setYearDropdown('{{ y }}')">{{ y }}</a></li>
         {% endfor %}

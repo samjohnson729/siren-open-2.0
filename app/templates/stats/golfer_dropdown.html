@@ -1,10 +1,13 @@
 <div class="dropdown" style="padding-left: 1px; padding-right: 1px;">
     <span class="label-above">Golfer</span>
     <button class="btn btn-success dropdown-toggle filter-button" type="button" data-bs-toggle="dropdown"
-        aria-expanded="false" data-key="{{ golfer }}" id="golfer-dropdown">
-        {{ golfer }}
+        aria-expanded="false" data-key="{{ golfer or '' }}" id="golfer-dropdown">
+        {{ golfer or 'All' }}
     </button>
     <ul class="dropdown-menu">
+        {% if include_all_golfers %}
+        <li><a class="dropdown-item" onclick="setGolferDropdown('', 'All')">All</a></li>
+        {% endif %}
         {% for g in golfers %}
         <li><a class="dropdown-item" onclick="setGolferDropdown('{{ g }}', '{{ g }}')">{{ g }}</a></li>
         {% endfor %}

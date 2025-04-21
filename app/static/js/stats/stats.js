@@ -31,7 +31,6 @@ window.addEventListener('DOMContentLoaded', function() {
         for (var dropdown of dropdowns.children) {
             for (var el of dropdown.children) {
                 if (el.type === "button") {
-                    console.log(`${el.offsetWidth * available_width / initial_used_width}px`);
                     el.style.maxWidth = `${el.offsetWidth * available_width / initial_used_width}px`;
                 }
             }
@@ -39,5 +38,4 @@ window.addEventListener('DOMContentLoaded', function() {
     } else {
 
     }
-    console.log('Available width: ' + available_width + ', Used width: ' + initial_used_width);    
 });

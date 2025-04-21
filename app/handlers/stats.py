@@ -114,7 +114,15 @@ def build_table(
         total_row=total_row
     )
     
-def build_filter_buttons(year:int=False, course:str=False, golfer:bool=False, statistic:str=False):
+def build_filter_buttons(
+    year:int=False,
+    course:str=False,
+    golfer:bool=False,
+    statistic:str=False,
+    include_all_years:bool=False,
+    include_all_courses:bool=False,
+    include_all_golfers:bool=False,
+):
     prefix = '<div style="display: flex;" id="filters">\n'
     suffix = '\n</div>'
     
@@ -124,29 +132,31 @@ def build_filter_buttons(year:int=False, course:str=False, golfer:bool=False, st
         output.append(render_template(
             'stats/year_dropdown.html',
             years=sorted([t.year for t in db.session.query(Tournament).all()])[::-1],
-            year=year
+            year=year,
+            include_all_years=include_all_years
         ))
         
     if course is not False:
         output.append(render_template(
             'stats/course_dropdown.html',
             courses=[c.name for c in db.session.query(Course).all()],
-            course=course
+            course=course,
+            include_all_courses=include_all_courses
         ))
         
     if golfer is not False:
         output.append(render_template(
             'stats/golfer_dropdown.html',
             golfers=[g.name for g in db.session.query(Golfer).all()],
-            golfer=golfer
+            golfer=golfer,
+            include_all_golfers=include_all_golfers
         ))
         
     if statistic is not False:
         output.append(render_template(
             'stats/statistic_dropdown.html',
             statistics_dict=STATISTICS,
-            statistic_key=statistic
-        ))
+            statistic_key=statistic        ))
         
     return prefix + '\n'.join(output) + suffix
 
@@ -161,7 +171,7 @@ def render_leaderboard(params: dict = {}):
     year = params.get('year')
     statistic_key = params.get('statistic', 'score')
     
-    filter_buttons = build_filter_buttons(year=year, statistic=statistic_key)
+    filter_buttons = build_filter_buttons(year=year, statistic=statistic_key, include_all_years=True)
     
     objects = db.session.query(Round)
     if year: objects = objects.join(Tournament).filter(Tournament.year == year)
@@ -192,7 +202,8 @@ def render_scorecard(params: dict = {}):
     filter_buttons = build_filter_buttons(
         year=year,
         course=course,
-        statistic=statistic_key
+        statistic=statistic_key,
+        include_all_years=True
     )
 
     # query all the relevant rounds
@@ -214,6 +225,45 @@ def render_scorecard(params: dict = {}):
         'stats/scorecard.html',
         filter_buttons=filter_buttons,
         table=table
+    )
+
+def render_breakdown(params: dict = {}):
+    
+    year = params.get('year')
+    course = params.get('course')
+    golfer = params.get('golfer')
+    
+    filter_buttons = build_filter_buttons(
+        year=year,
+        course=course,
+        golfer=golfer,
+        include_all_years=True,
+        include_all_courses=True,
+        include_all_golfers=True
+    )
+    
+    hole_scores = db.session.query(HoleScore).all()
+    if year:
+        hole_scores = [hs for hs in hole_scores if hs.round.tournament.year == int(year)]
+    if course:
+        hole_scores = [hs for hs in hole_scores if hs.round.layout.course.name == course]
+    if golfer:
+        hole_scores = [hs for hs in hole_scores if hs.round.golfer.name == golfer]
+    hole_scores = [hs._get_score_to_par() for hs in hole_scores if hs.is_completed()]
+    
+    breakdown = {
+        'Eagle': sum([hs < -1 for hs in hole_scores]),
+        'Birdie': hole_scores.count(-1),
+        'Par': hole_scores.count(0),
+        'Bogey': hole_scores.count(1),
+        'Double Bogey': hole_scores.count(2),
+        'Triple+ Bogey': sum([hs > 2 for hs in hole_scores])
+    }
+    
+    return render_template(
+        'stats/breakdown.html',
+        filter_buttons=filter_buttons,
+        breakdown=breakdown
     )
 
 def render_golfer(params: dict = {}):
