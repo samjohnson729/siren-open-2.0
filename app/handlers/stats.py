@@ -19,11 +19,11 @@ STATISTICS = {
         'type': 'float',
         'formatting_function': utils.format_plus_minus,
     },
-    #'z-score': {
-    #    'label': 'Z-Score',
-    #    'type': 'float',
-    #    'aggregate_function': utils.aggregate_z_score,
-    #}
+    'z-score': {
+        'label': 'Z-Score',
+        'type': 'float',
+        'aggregate_function': utils.aggregate_z_score,
+    }
 }
 
 def build_table(
@@ -52,6 +52,7 @@ def build_table(
     rows = []
     columns = []
     data = {}
+    score_data = {} # always keep track of score so it can be used during z-score calculation
     for o in objects:
         
         x, y = o, o
@@ -69,26 +70,39 @@ def build_table(
         
         if x not in rows: rows.append(x)
         if y not in columns: columns.append(y)
-        if x not in data: data[x] = {}
-        if y not in data[x]: data[x][y] = []
-        value = o.get_statistic(statistic_key)
+        if x not in data:
+            data[x] = {}
+            score_data[x] = {}
+        if y not in data[x]:
+            data[x][y] = []
+            score_data[x][y] = []
         if (value := o.get_statistic(statistic_key)) is not None:
             data[x][y].append(value)
+            score_data[x][y].append(o._get_score())
         
     for x in data:
         for y in data[x]:
             data[x][y] = np.mean(data[x][y]) if len(data[x][y]) > 0 else None
+            score_data[x][y] = np.mean(score_data[x][y]) if len(score_data[x][y]) > 0 else None
         if total_column:
-            values = [v for v in data[x].values() if v is not None]
-            data[x]['Σ'] = sum(values) if len(values) > 0 else None
+            if 'aggregate_function' in statistic:
+                data[x]['Σ'] = statistic['aggregate_function'](values=score_data[x], row_attrs=row_attrs, col_attrs=col_attrs)
+            else:
+                values = [v for v in data[x].values() if v is not None]
+                data[x]['Σ'] = sum(values) if len(values) > 0 else None
     
     if total_column:
         columns.append('Σ')
     if total_row:
-        data['Total'] = {}
+        data['Σ'] = {}
         for c in columns:
-            values = [data[x][c] for x in data if x != 'Total' and data[x][c] is not None]
-            data['Total'][c] = sum(values) if len(values) > 0 else None
+            if 'aggregate_function' in statistic:
+                total = sum([v[c] for k,v in score_data.items() if v[c] is not None])
+                values = {'total': total, 'course': objects[0].round.layout.course.name}
+                data['Σ'][c] = statistic['aggregate_function'](values=values, row_attrs=row_attrs, col_attrs=col_attrs)
+            else:
+                values = [data[x][c] for x in data if x != 'Σ' and data[x][c] is not None]
+                data['Σ'][c] = sum(values) if len(values) > 0 else None
     
     for x in data:
         for y in data[x]:
@@ -99,7 +113,7 @@ def build_table(
             elif year and statistic['type'] == 'int':
                 data[x][y] = round(data[x][y])
             else:
-                data[x][y] = round(data[x][y], 1)
+                data[x][y] = round(data[x][y], 2)
 
             if 'formatting_function' in statistic:
                 data[x][y] = statistic['formatting_function'](data[x][y])

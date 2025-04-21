@@ -69,6 +69,7 @@ class Golfer(db.Model):
             'values': values
         }
 
+
 class Course(db.Model):
     __tablename__ = 'course'
 
@@ -180,9 +181,8 @@ class Round(db.Model):
         return sum([h._get_mean() for h in self.layout.holes]) - self._get_score()
     
     def _get_z_score(self):
-        mu = sum([h._get_mean() for h in self.layout.holes])
-        sigma = np.sqrt(sum([h._get_variance() for h in self.layout.holes]))
-        return (mu - self._get_score()) / sigma
+        all_scores = utils.flatten([[r._get_score() for r in l.rounds if r.is_completed()] for l in self.layout.course.layouts])
+        return (np.mean(all_scores) - self._get_score()) / np.std(all_scores)
 
 
 class Tournament(db.Model):
@@ -246,11 +246,11 @@ class HoleScore(db.Model):
         return self.score - self.hole.par
         
     def _get_strokes_gained(self):
-        past_scores = [hs.get_statistic('score') for hs in self.hole.scores]
-        return np.mean([x for x in past_scores if x is not None]) - self._get_score()
+        all_scores = [hs._get_score() for hs in self.hole.scores if hs.is_completed()]
+        return np.mean(all_scores) - self._get_score()
     
     def _get_z_score(self):
-        past_scores = [hs.get_statistic('score') for hs in self.hole.scores]
-        mu = np.mean([x for x in past_scores if x is not None])
-        sigma = np.std([x for x in past_scores if x is not None])
-        return (mu - self._get_score()) / sigma
+        all_scores = [hs._get_score() for hs in self.hole.scores if hs.is_completed()]
+        return (np.mean(all_scores) - self._get_score()) / np.std(all_scores)
+
+from app import utils

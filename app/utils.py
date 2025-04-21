@@ -17,31 +17,46 @@ def flatten(xss):
         for x in xs
     ]
 
-def aggregate_z_score(**kwargs):
-
-    if len(kwargs) == 2 and 'golfer' in kwargs and 'year' in kwargs:
+def aggregate_z_score(values, row_attrs:list, col_attrs:list):
+    
+    all_rounds = [r for r in db.session.query(Round).all() if r.is_completed()]
+    
+    if (
+        (row_attrs[-2:] == ['golfer', 'name'] and col_attrs[-2:] == ['course', 'name']) or
+        (row_attrs[-2:] == ['tournament', 'year'] and col_attrs[-2:] == ['course', 'name'])
+    ):
         
-        if kwargs['year'] is not None:
-            hole_scores = (
-                db.session.query(HoleScore)
-                .join(Round)
-                .join(Golfer)
-                .join(Tournament)
-            ).filter(
-                (Golfer.name == kwargs['golfer']) &
-                (Tournament.year == kwargs['year'])
-            ).all()
-        else:
-            hole_scores = (
-                db.session.query(HoleScore)
-                .join(Round)
-                .join(Golfer)
-            ).filter(
-                (Golfer.name == kwargs['golfer'])
-            ).all()
-
-        hole_scores = [hs for hs in hole_scores if hs.is_completed()]
-        total = sum([hs._get_score() for hs in hole_scores])
-        mu = sum([hs.hole._get_mean() for hs in hole_scores])
-        sigma_2 = sum([hs.hole._get_variance() for hs in hole_scores])
-        return (mu - total) / np.sqrt(sigma_2)
+        scores = {}
+        for r in all_rounds:
+            if r.layout.course.name not in scores:
+                scores[r.layout.course.name] = []
+            scores[r.layout.course.name].append(r._get_score())
+            
+        total_mu = 0
+        total_var = 0
+        for k,v in scores.items():
+            if values.get(k) is not None:
+                total_mu += np.mean(v)
+                total_var += np.var(v)
+            
+        if total_mu > 0:
+            total = sum(v for v in values.values() if v is not None)
+            return (total_mu - total) / np.sqrt(total_var)
+        
+    elif (
+        (row_attrs[-2:] == ['hole', 'number'] and col_attrs[-2:] == ['golfer', 'name'])
+    ):
+        
+        scores = []
+        for r in all_rounds:
+            if r.layout.course.name != values['course']:
+                continue
+            
+            scores.append(r._get_score())
+            
+        if values['total'] > 0:
+            return (np.mean(scores) - values['total']) / np.std(scores)
+        
+    else:
+        pass
+            
