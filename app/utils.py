@@ -44,7 +44,8 @@ def aggregate_z_score(values, row_attrs:list, col_attrs:list):
             return (total_mu - total) / np.sqrt(total_var)
         
     elif (
-        (row_attrs[-2:] == ['hole', 'number'] and col_attrs[-2:] == ['golfer', 'name'])
+        (row_attrs[-2:] == ['hole', 'number'] and col_attrs[-2:] == ['golfer', 'name']) or
+        (row_attrs[-2:] == ['hole', 'number'] and col_attrs[-2:] == ['tournament', 'year'])
     ):
         
         scores = []
