@@ -6,15 +6,18 @@
 <!-- Course selection tabs -->
 {{ course_tabs|safe }}
 
-<h3 class="py-3">Summary</h3>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="course-0" role="tabpanel" aria-labelledby="course-0-tab">
+        <h3 class="py-3">Summary</h3>
         {{ summaries[0]|safe }}
+        <h3 class="py-3">Detail</h3>
         {{ details[0]|safe }}
     </div>
     {% for i in range(1, summaries|count) %}
     <div class="tab-pane fade" id="course-{{ i }}" role="tabpanel" aria-labelledby="course-{{ i }}-tab">
+        <h3 class="py-3">Summary</h3>
         {{ summaries[i]|safe }}
+        <h3 class="py-3">Detail</h3>
         {{ details[i]|safe }}
     </div>
     {% endfor %}
