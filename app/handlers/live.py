@@ -6,7 +6,7 @@ CURRENT_YEAR = 2025
 
 def render_live_summary(course: str):
     tournament = db.session.query(Tournament).filter(Tournament.year == CURRENT_YEAR).first()
-    all_courses = sorted([c.name for c in db.session.query(Course).all()])
+    all_courses = sorted(set([r.layout.course.name for r in tournament.rounds]))
 
     hole_scores = (
         db.session.query(HoleScore)
@@ -45,7 +45,8 @@ def render_live_summary(course: str):
 
 def render_live_detail(course: str, hole: int):
 
-    all_courses = sorted([c.name for c in db.session.query(Course).all()])
+    tournament = db.session.query(Tournament).filter(Tournament.year == CURRENT_YEAR).first()
+    all_courses = sorted(set([r.layout.course.name for r in tournament.rounds]))
 
     hole_scores = (
         db.session.query(HoleScore)
