@@ -38,13 +38,13 @@ for year in detailed.Year.unique():
     else:
         t = tournaments.get(tournament_id)
 
-    
+
     for event in df.Event.unique():
         df = detailed[
             (detailed.Year == year) &
             (detailed.Event == event)
         ].copy()
-        
+
         # Course
         course_id = event
         if course_id not in courses:
@@ -134,10 +134,15 @@ g = Golfer(name='Dan Sievert')
 db.session.add(g)
 g = Golfer(name='Austin Magnuson')
 db.session.add(g)
+g = Golfer(name='Matt Kiloran')
+db.session.add(g)
 db.session.commit()
 
 for g in db.session.query(Golfer).all():
     for c in db.session.query(Course).all():
+        if c.name == 'Tjiny Acres':
+            continue
+
         l: Layout = c.layouts[-1]
         r = Round(tournament_id=t.id, golfer_id=g.id, layout_id=l.id)
         db.session.add(r)

@@ -4,7 +4,8 @@ from app.models import *
 
 CURRENT_YEAR = 2025
 
-def render_live_summary(course: str):    
+def render_live_summary(course: str):
+    tournament = db.session.query(Tournament).filter(Tournament.year == CURRENT_YEAR).first()
     all_courses = sorted([c.name for c in db.session.query(Course).all()])
 
     hole_scores = (
@@ -32,7 +33,7 @@ def render_live_summary(course: str):
         if hs.score:
             score_summary[hs.round.golfer.name]['par'] += int(hs.hole.par)
             score_summary[hs.round.golfer.name]['total'] += int(hs.score)
-    
+
     return render_template(
         'live/live_summary.html',
         all_courses=all_courses,
