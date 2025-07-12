@@ -132,8 +132,6 @@ db.session.add(t)
 
 g = Golfer(name='Dan Sievert')
 db.session.add(g)
-g = Golfer(name='Austin Magnuson')
-db.session.add(g)
 g = Golfer(name='Matt Kiloran')
 db.session.add(g)
 db.session.commit()
